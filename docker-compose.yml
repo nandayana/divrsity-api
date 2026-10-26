@@ -1,0 +1,84 @@
+services:
+
+  postgres:
+    image: postgres:17-alpine
+
+    container_name: divrsity-postgres
+
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    networks:
+      - db
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  api:
+    image: ghcr.io/YOUR_GITHUB_USERNAME/divrsity-api:latest
+
+    container_name: divrsity-api
+
+    restart: unless-stopped
+
+    env_file:
+      - .env
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - proxy
+      - db
+
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.divrsity-api.rule=Host(`api.example.com`)"
+      - "traefik.http.routers.divrsity-api.entrypoints=websecure"
+      - "traefik.http.routers.divrsity-api.tls=true"
+      - "traefik.http.routers.divrsity-api.tls.certresolver=le"
+      - "traefik.http.services.divrsity-api.loadbalancer.server.port=3000"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--spider",
+          "-q",
+          "http://localhost:3000/health"
+        ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+
+networks:
+
+  proxy:
+    external: true
+
+  db:
+    driver: bridge
+
+
+volumes:
+
+  postgres_data:

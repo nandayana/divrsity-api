@@ -1,0 +1,1 @@
+ALTER TABLE "order_shipping" ALTER COLUMN "shipping_type" SET DATA TYPE varchar(255);

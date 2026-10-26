@@ -1,0 +1,1 @@
+ALTER TABLE "shipping" ALTER COLUMN "shipping_no" DROP NOT NULL;

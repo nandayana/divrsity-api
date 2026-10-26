@@ -1,0 +1,1 @@
+ALTER TABLE "shipping" DROP CONSTRAINT "shipping_awb_unique";

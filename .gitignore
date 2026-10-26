@@ -1,0 +1,38 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Uploaded Media / Assets (opsional, jika isi folder media berupa file upload pengguna)
+media/*
+!media/.gitkeep
+
+# Production Build Output (jika ada kompilasi ke folder dist/build)
+dist/
+build/
+
+# Database Files (jika pakai SQLite lokal)
+*.db
+*.sqlite
+*.sqlite-journal
+
+# Editor & IDE Configs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
